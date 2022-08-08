@@ -1,0 +1,235 @@
+[
+    {
+        "id": "9e1f4ddd707d008b",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d44193718741797b",
+        "type": "mqtt in",
+        "z": "9e1f4ddd707d008b",
+        "name": "",
+        "topic": "Liberato/iotTro/44xx-21/env",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "af3c4c65323c88a3",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 340,
+        "wires": [
+            [
+                "9f68b4dfe7fde04b",
+                "612155240b6f3b1d"
+            ]
+        ]
+    },
+    {
+        "id": "4fc13d02f8fe5fc6",
+        "type": "function",
+        "z": "9e1f4ddd707d008b",
+        "name": "",
+        "func": "let obj = new Object();\nvar M_temperatura =0;\nvar M_umidade =0;\nvar i;\n\n\nfor  (i=0; i<15;i++) \n{\n    let media =  msg.payload[i];\n    M_temperatura = M_temperatura + media.temperatura;\n    M_umidade = M_umidade + media.umidade;\n}\n\n\nM_temperatura = M_temperatura/(i);\nM_umidade = M_umidade/(i);\n\nobj.seq = msg.payload[14].seq + 900000;\nobj.nome = \"Pedro Stanislau Tomacheski\";\nobj.matricula = \"18000311\";\nobj.turma = \"4411\";\nobj.data = msg.payload[0].data;\nobj.Hini = msg.payload[0].hora;\nobj.Hfim = msg.payload[14].hora;\nobj.M_temperatura =  M_temperatura.toFixed(2);\nobj.M_umidade = M_umidade.toFixed(2); \n\nobj.alarme=\"Tudo OK, média de 15 valores\";\nif (M_temperatura>45) obj.alarme=\"Está muito quente\";\nif (M_temperatura<0) obj.alarme=\"Está muito frio\";\nif (M_umidade<20) obj.alarme=\"Umidade muito baixa\";\n\nmsg.payload=obj;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 340,
+        "wires": [
+            [
+                "1610a515837b6c27",
+                "35e767b94ecf0634"
+            ]
+        ]
+    },
+    {
+        "id": "1610a515837b6c27",
+        "type": "debug",
+        "z": "9e1f4ddd707d008b",
+        "name": "RELATÓRIO",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "35e767b94ecf0634",
+        "type": "mqtt out",
+        "z": "9e1f4ddd707d008b",
+        "name": "",
+        "topic": "Liberato/iotTro/44xx-21/proc",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "af3c4c65323c88a3",
+        "x": 760,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "a87669870e7838b1",
+        "type": "mqtt in",
+        "z": "9e1f4ddd707d008b",
+        "name": "",
+        "topic": "Liberato/iotTro/44xx-21/ack",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "af3c4c65323c88a3",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 460,
+        "wires": [
+            [
+                "97ce08d2960f42ba"
+            ]
+        ]
+    },
+    {
+        "id": "97ce08d2960f42ba",
+        "type": "debug",
+        "z": "9e1f4ddd707d008b",
+        "name": "RETORNO",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "9f68b4dfe7fde04b",
+        "type": "join",
+        "z": "9e1f4ddd707d008b",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "15",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "num",
+        "reduceFixup": "",
+        "x": 370,
+        "y": 340,
+        "wires": [
+            [
+                "4fc13d02f8fe5fc6"
+            ]
+        ]
+    },
+    {
+        "id": "612155240b6f3b1d",
+        "type": "debug",
+        "z": "9e1f4ddd707d008b",
+        "name": "RECEBIDO",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 370,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "5aa6bfb0497a735e",
+        "type": "debug",
+        "z": "9e1f4ddd707d008b",
+        "name": "SERVER DO SOR",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "75889a6c93236b42",
+        "type": "mqtt in",
+        "z": "9e1f4ddd707d008b",
+        "name": "",
+        "topic": "Liberato/iotTro/44xx-21/proc",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "af3c4c65323c88a3",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 180,
+        "y": 600,
+        "wires": [
+            [
+                "5aa6bfb0497a735e"
+            ]
+        ]
+    },
+    {
+        "id": "af3c4c65323c88a3",
+        "type": "mqtt-broker",
+        "name": "Mosquito",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": "",
+        "credentials": {}
+    }
+]
